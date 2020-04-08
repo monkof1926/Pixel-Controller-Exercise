@@ -8,6 +8,7 @@ const int buttonPres = 14;// the pin for the button
 unsigned long currentMillis;// assign a value for the timer  
 unsigned long previousMillis = 0;// to store the last time/millls form the last interval
 int interval = 1000;//  to be used in the timer funtion 
+int tollance = 20;
   
   const char * ssid = "";//input name of network
   const char * password = ""; //input the password for the network
@@ -29,9 +30,9 @@ void Broadcasts_Movement(String Movement, String print){ //broadcasts the moveme
   Serial.print(print); //prints the way the pixel moves in the serial moniter 
 }
 void Pixel_Movement(int horizontal, int vertical){
-  if(vertical == 0){ // by pushing the joystick all the way to the right the pixel move right
+  if(horizontal >= 2000 - tollance && horizontal <= 0 + tollance ){ // by pushing the joystick all the way to the right the pixel move right
     Broadcasts_Movement("moveright ","moveright ");
-  } else if (vertical == 4095) // by pushing the joystick all the way to the left the pixel move right
+  } else if (horizontal == 4095) // by pushing the joystick all the way to the left the pixel move right
   {Broadcasts_Movement("moveleft  ","moveleft ");
   } else if (horizontal == 0){ // by pushing the joystick all the way to the up the pixel move right
      Broadcasts_Movement("moveup ","moveup ");
