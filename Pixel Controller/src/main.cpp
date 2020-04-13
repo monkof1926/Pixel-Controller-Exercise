@@ -10,7 +10,7 @@ unsigned long previousMillis = 0;// to store the last time/millls form the last 
 int interval = 1000;//  to be used in the timer funtion 
 int tollance = 20;
   
-  const char * ssid = "";//input name of network
+  const char * ssid = ""; //input name of network
   const char * password = ""; //input the password for the network
   AsyncUDP UDP; // creates an AsyncUDP object 
   int port = 7000; // assign a port to broadcast yo
@@ -32,11 +32,11 @@ void Broadcasts_Movement(String Movement, String print){ //broadcasts the moveme
 void Pixel_Movement(int horizontal, int vertical){
   if(horizontal >= 2000 - tollance && horizontal <= 0 + tollance ){ // by pushing the joystick all the way to the right the pixel move right
     Broadcasts_Movement("moveright ","moveright ");
-  } else if (horizontal == 4095) // by pushing the joystick all the way to the left the pixel move right
+  } else if (horizontal <= 2100+tollance && horizontal >= 4000 - tollance ) // by pushing the joystick all the way to the left the pixel move right
   {Broadcasts_Movement("moveleft  ","moveleft ");
-  } else if (horizontal == 0){ // by pushing the joystick all the way to the up the pixel move right
+  } else if (vertical >=  2000 - tollance && vertical <= 0 + tollance){ // by pushing the joystick all the way to the up the pixel move right
      Broadcasts_Movement("moveup ","moveup ");
-  } else if(horizontal == 4095){ // by pushing the joystick all the way to the down the pixel move right the down does not work you need to pres the joystick down and left to make it print/move down
+  } else if(vertical <= 2100 + tollance && vertical >= 4000 - tollance){ // by pushing the joystick all the way to the down the pixel move right the down does not work you need to pres the joystick down and left to make it print/move down
    Broadcasts_Movement("movedown  ","movedown "); 
   }else{
     UDP.broadcastTo("not moveing",port); // when the joystick is not moveing the pixel will stop
