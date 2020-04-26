@@ -7,8 +7,8 @@ const int pinY = 35; //the pin for the y
 const int buttonPres = 14; // the pin for the button
 unsigned long currentMillis; // assign a value for the timer  
 unsigned long previousMillis = 0; // to store the last time/millls form the last interval
-int interval = 1000; //  to be used in the timer funtion 
 int tollance = 20;   
+const int LED_Pin = 19 ;
 
   
   const char * ssid = ""; //input name of network
@@ -24,6 +24,23 @@ void setup() {
  pinMode(pinX,INPUT); // the x-axis or right and left
  pinMode(pinY,INPUT); // the y-axis or up and down
  pinMode(buttonPres,INPUT_PULLUP); // used to initializing the pixel bye buttonpres 
+ pinMode(EXTRENAL_LED,OUTPUT); 
+ pinMode(LED_BUILTIN,OUTPUT);
+}
+
+void LEDBlinkON(int LCD_Pin){
+  digitalWrite(LED_BUILTIN,HIGH);
+  digitalWrite(EXTRENAL_LED,HIGH);
+}
+
+void LEDBlinkOFF (){
+  digitalWrite(LED_BUILTIN,LOW);   
+  digitalWrite(EXTRENAL_LED,LOW);
+}
+
+void Initialize_Pixel(){
+if(digitalRead(buttonPres) == LOW){ // LOW == pressed
+     UDP.broadcastTo("init 6 6",port); // initialise the pixel by presing the button
 }
  
 void Broadcasts_Movement(String Movement, String print){ //broadcasts the movement of the pixels on the pixelserver
@@ -33,23 +50,26 @@ void Broadcasts_Movement(String Movement, String print){ //broadcasts the moveme
 void Pixel_Movement(int horizontal, int vertical){
   if(horizontal >= 2000 - tollance && horizontal <= 0 + tollance ){ // by pushing the joystick all the way to the right the pixel move right
     Broadcasts_Movement("moveright ","moveright ");
+    LEDBlinkON;
   } else if (horizontal <= 2100+tollance && horizontal >= 4000 - tollance ) // by pushing the joystick all the way to the left the pixel move right
   {Broadcasts_Movement("moveleft  ","moveleft ");
+    LEDBlinkOFF
   } else if (vertical >=  2000 - tollance && vertical <= 0 + tollance){ // by pushing the joystick all the way to the up the pixel move right
      Broadcasts_Movement("moveup ","moveup ");
+     LEDBlinkON;
   } else if(vertical <= 2100 + tollance && vertical >= 4000 - tollance){ // by pushing the joystick all the way to the down the pixel move right the down does not work you need to pres the joystick down and left to make it print/move down
    Broadcasts_Movement("movedown  ","movedown "); 
+   LEDBlinkOFF
   }else{
-    UDP.broadcastTo("not moveing",port); // when the joystick is not moveing the pixel will stop
+    UDP.broadcastTo("not moveing",port);  // when the joystick is not moveing the pixel will stop
+    LEDBlinkOFF;
   }    
 }
-
 
  
 void loop() {
   currentMillis = millis(); // set currentMillis to Millis 
-   if(digitalRead(buttonPres) == LOW){ // LOW == pressed
-     UDP.broadcastTo("init 6 6",port); // initialise the pixel by presing the button
+   Initialize_Pixel;
   }
   
   if(currentMillis-previousMillis >interval){ // will only read commands at the interval 
