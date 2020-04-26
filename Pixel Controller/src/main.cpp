@@ -1,14 +1,15 @@
 #include <Arduino.h>
-#include  "WiFi.h"//libery need to run the program 
-#include "AsyncUDP.h"//libery need to run the program 
+#include  <WiFi.h> //libery need to run the program 
+#include <AsyncUDP.h> //libery need to run the program 
  
-const int pinX = 34;//the pin for the x
-const int pinY = 35;//the pin for the y
-const int buttonPres = 14;// the pin for the button
-unsigned long currentMillis;// assign a value for the timer  
-unsigned long previousMillis = 0;// to store the last time/millls form the last interval
-int interval = 1000;//  to be used in the timer funtion 
-int tollance = 20;
+const int pinX = 34; //the pin for the x
+const int pinY = 35; //the pin for the y
+const int buttonPres = 14; // the pin for the button
+unsigned long currentMillis; // assign a value for the timer  
+unsigned long previousMillis = 0; // to store the last time/millls form the last interval
+int interval = 1000; //  to be used in the timer funtion 
+int tollance = 20;   
+
   
   const char * ssid = ""; //input name of network
   const char * password = ""; //input the password for the network
@@ -17,7 +18,7 @@ int tollance = 20;
   int listenport = 7007; // assign a port to listen to
  
 void setup() {
- Serial.begin(9600);// the program begins
+ Serial.begin(9600); // the program begins
  WiFi.mode(WIFI_STA); // to connects to the Wifi
  WiFi.begin(ssid, password); // checks if the WiFi name and password  
  pinMode(pinX,INPUT); // the x-axis or right and left
@@ -42,16 +43,18 @@ void Pixel_Movement(int horizontal, int vertical){
     UDP.broadcastTo("not moveing",port); // when the joystick is not moveing the pixel will stop
   }    
 }
+
+
  
 void loop() {
-  currentMillis = millis();// set currentMillis to Millis 
+  currentMillis = millis(); // set currentMillis to Millis 
    if(digitalRead(buttonPres) == LOW){ // LOW == pressed
-     UDP.broadcastTo("init 6 6",port);// initialise the pixel by presing the button
+     UDP.broadcastTo("init 6 6",port); // initialise the pixel by presing the button
   }
   
-  if(currentMillis-previousMillis >interval){// will only read commands at the interval 
-    Pixel_Movement(analogRead(pinX),analogRead(pinY));// is used to read the input from the joystick 
-    previousMillis=currentMillis;// the interval will be repeated 
-    UDP.listen(listenport);// listening on the listenport 
+  if(currentMillis-previousMillis >interval){ // will only read commands at the interval 
+    Pixel_Movement(analogRead(pinX),analogRead(pinY)); // is used to read the input from the joystick 
+    previousMillis=currentMillis; // the interval will be repeated 
+    UDP.listen(listenport); // listening on the listenport 
   }  
 }
